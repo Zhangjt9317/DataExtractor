@@ -2,12 +2,16 @@
 
 This is the second phase of OPVDB project.
 
-This DataExtractor is built on ChemDataExtractor (CDE) version 1.3.0 by Matt Swain and paper-parser (pp) by Christian Chang and contributors. 
+This DataExtractor is built on ChemDataExtractor (CDE) version 1.3.0 by Matt Swain and paper-parser (pp) by Christian Chang and contributors.
+
 The challenge faced by data mining in research and academia is the application of a pipeline in certain field of study and output a systematic database that can feed back and benefit the research.
 
 Both CDE and pp provide excellent platforms of allowing users to customize items by themselves and perform data mining. pp stops at extracting information, and we believe we can perform the information extraction in more areas and build a organized and systematic database based on extracted information. Thus this project focuses on practical use of a data mining pipeline, including literature collection, data parsing, data exhibition and database creation.
 
 ## Description
+
+The overall workflow of this project should follow this graph:
+![workflow](project_xmind.png)
 
 1. Data Collection
 
@@ -15,13 +19,13 @@ Both CDE and pp provide excellent platforms of allowing users to customize items
 
     [Scraper](https://github.com/Zhangjt9317/Scraper.git)
 
-2. Information Extraction 
+2. Information Extraction and Database
 
-    We can focus on more fields of study, including peroskite solar cell, which is already done by pp, organic photovoltaic materials, which can be another topic to study, thermosetting resins, and thermal properties of materials. Basically any field that is experiment-heavy can benefit from this project and the database we created. 
+    We can focus on more fields of study, including peroskite solar cell, which is already done by pp, organic photovoltaic materials, which can be another topic to study, thermosetting resins, and thermal properties of materials. Basically any field that is experiment-heavy can benefit from this project and the database we created.
 
     [DataExtractor](https://github.com/Zhangjt9317/DataExtractor.git)
 
-3. Exhibition 
+3. Exhibition
 
     After performing information extraction, the processed data can be further cleaned and organized, and then a Django-based platform can be built to exhibit researchers information of materials reported on literature. Given a good example, refer to this paper: [dye-sensitized solar cell database](https://www.ncbi.nlm.nih.gov/pubmed/29616364)
 
@@ -87,10 +91,6 @@ Then take a look into the `scripts` and `notebooks` folders.
 ├── README.md               <- The top-level README for developers.
 ├── configs                 <- Directory for configurations of model & application.
 ├── data
-│   ├── external            <- Data from third party sources.
-│   ├── interim             <- Intermediate data that has been transformed.
-│   ├── processed           <- The final, canonical data sets for modeling.
-│   └── raw                 <- The original, immutable data dump.
 ├── docs                    <- Directory for Sphinx documentation in rst or md.
 ├── environment.yaml        <- The conda environment file for reproducibility.
 ├── models                  <- Trained and serialized models, model predictions,
@@ -128,6 +128,11 @@ information on PyScaffold see https://pyscaffold.org/.
 
 
 # Contributors 
+Jingtian Zhang
+Edwin Jiang
+Luna Huang
+Fumio Ohuchi
+
 
 # Acknowledgements
 
