@@ -5,8 +5,10 @@ DataExtractor.scraper.articles
 This is built on urllib and feedparser
 
 Scraping down articles with specific scope or search query for parsers to process
-Supported platforms include 
+Supported platforms include Elsevier, Springer, ACS, RSC
 
+
+RSC only supports compounds API, so not all content related to the topic can be searched
 """
 
 import re
@@ -17,6 +19,7 @@ import urllib
 import feedparser
 import unittest
 import pandas as pd
+
 
 def scrape(platform, scope, search_term, start, count):
     """
@@ -43,7 +46,7 @@ def scrape(platform, scope, search_term, start, count):
         apiKey = "4bc84cbdadca6050062348015ac963aa"
         url = "https://api.elsevier.com/content/search/scopus?query={scope}:{search_term}&count={count}&start={start}&apiKey={apiKey}&sortBy=submittedDate&sortOrder=ascending&start={start}&max_results={count}"
 
-    # Springer Nature 
+    # Springer Nature
     elif platform == "Springer":
         apiKey = "eca22bc7a0b1ee3153ab02c024a6a06e"
         url = "http://api.springernature.com/openaccess/JSON?api_key={apiKey}&q={scope}:{search_term}&s={start}&p={count}"
@@ -51,10 +54,13 @@ def scrape(platform, scope, search_term, start, count):
     # American Chemical Society
     # ACS uses CAS portal to export
     elif platform == "ACS":
+        # ACS has CAS system
+        
         url = ""
 
     # arXiv e-prints
     elif platform == "arXiv":
+        # arXiv doesn't have API keys
         url = "http://export.arxiv.org/api/query?search_query={scope}:{search_term}&sortBy=submittedDate&sortOrder=ascending&start={start}&max_results={count}"
 
     # Royal Society of Chemistry
@@ -68,7 +74,8 @@ def scrape(platform, scope, search_term, start, count):
         feed = feedparser.parse(response)
         if not feed.entries:
             print('query complete')
-            print(f"There should be {feed.feed.opensearch_totalresults} results?")
+            print(
+                f"There should be {feed.feed.opensearch_totalresults} results?")
             break
         date_dict['date'].extend([entry.published for entry in feed.entries])
         date_dict['article_id'].extend(
