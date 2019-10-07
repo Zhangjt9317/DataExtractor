@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/anaconda3/envs/MATenv/bin/python",
+    "python.pythonPath": "C:\\Users\\jtz93\\Anaconda3\\envs\\MATenv\\python.exe",
     "restructuredtext.confPath": "${workspaceFolder}/my_project/docs"
 }

@@ -7,7 +7,8 @@ This is built on top of chemdataextractor module:
 chemdataextractor parsing syntax.
 
 Parses chemical graphs, workflows, reaction processes, etc. from literature
-and convert materials into SMILES
+and convert materials into SMILES using OSRA
+
 """
 
 import logging 
@@ -22,6 +23,6 @@ from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, O
 from chemdataextractor.parse.cem import chemical_name
 from chemdataextractor.doc import Paragraph, Sentence
 
-
-# from 
+ # in html images are shown in <img> tag, in pdf, not sure, in xml shown as GraphXML format
 def graph(para):
+    # 
