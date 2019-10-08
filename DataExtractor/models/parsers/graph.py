@@ -25,4 +25,4 @@ from chemdataextractor.doc import Paragraph, Sentence
 
  # in html images are shown in <img> tag, in pdf, not sure, in xml shown as GraphXML format
 def graph(para):
-    # 
+    
