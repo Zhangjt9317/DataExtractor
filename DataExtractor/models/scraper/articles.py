@@ -55,7 +55,6 @@ def scrape(platform, scope, search_term, start, count):
     # ACS uses CAS portal to export
     elif platform == "ACS":
         # ACS has CAS system
-        
         url = ""
 
     # arXiv e-prints
@@ -74,8 +73,7 @@ def scrape(platform, scope, search_term, start, count):
         feed = feedparser.parse(response)
         if not feed.entries:
             print('query complete')
-            print(
-                f"There should be {feed.feed.opensearch_totalresults} results?")
+            print(f"There should be {feed.feed.opensearch_totalresults} results?")
             break
         date_dict['date'].extend([entry.published for entry in feed.entries])
         date_dict['article_id'].extend(
