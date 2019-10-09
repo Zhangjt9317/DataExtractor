@@ -23,36 +23,25 @@ from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, O
 from chemdataextractor.parse.cem import chemical_name
 from chemdataextractor.doc import Paragraph, Sentence
 
+
 class Pce(BaseModel):
     value = StringType()
     units = StringType()
 
-
 Compound.pce_pattern = ListType(ModelType(Pce))
 
-abbrv_prefix = (
-    I(u'PCE') | I(u'PCEs') | I(u'pce')).hide()
-words_pref = (
-    I(u'power') + I(u'conversion') + I(u'efficiency')
-).hide()
-hyphanated_pref = (
-    I(u'power-conversion') + I(u'efficiency')
-).hide()
+abbrv_prefix = (I(u'PCE') | I(u'PCEs') | I(u'pce')).hide()
+words_pref = (I(u'power') + I(u'conversion') + I(u'efficiency')).hide()
+hyphanated_pref = (I(u'power-conversion') + I(u'efficiency')).hide()
 prefix = abbrv_prefix | words_pref | hyphanated_pref
 
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
 units = (W(u'%') | I(u'percent'))(u'units')
-# value = R(u'^\d+(\.\d+)?$')(u'value')
 value = R(u'\d+(\.\d+)?')(u'value')
 
-pce_first = (
-    prefix + ZeroOrMore(common_text) + value + units
-)(u'pce')
-pce_second = (
-    value + units + prefix)(u'pce')
-
+pce_first = (prefix + ZeroOrMore(common_text) + value + units)(u'pce')
+pce_second = (value + units + prefix)(u'pce')
 pce_pattern = pce_first | pce_second
-
 
 class PceParser(BaseParser):
     root = pce_pattern

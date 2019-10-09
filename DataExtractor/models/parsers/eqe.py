@@ -38,7 +38,7 @@ units = (W(u'%') | I(u'percent'))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
 eqe_first = (prefix + ZeroOrMore(common_text) + value + units)(u'eqe')
-eqe_second = (value + units + prefix)(u'ff')
+eqe_second = (value + units + prefix)(u'eqe')
 eqe_pattern = eqe_first | eqe_second
 
 class EqeParser(BaseParser):
