@@ -2,11 +2,14 @@ import json
 import urllib
 import requests
 
+import pymongo
+from pymongo import MongoClient
+import sys
+import glob, os
+
+# This class aims at scraping down articles for tests and store in local drive
 class search_and_pull:
-    """
-    One search api and one full article retrieval api
-    
-    """
+
     def __init__(self):
         self.els_key = "4bc84cbdadca6050062348015ac963aa"
         self.file = "testing_download_articles/write_test_els_paper2.json"
@@ -45,3 +48,25 @@ class search_and_pull:
             for num in range(len(ls)):
                 with open(folder + f'/write_test_els_paper{num}.xml', 'wb') as file:
                     file.write(r.content)
+
+
+# 
+path = '../test_articles/'
+os.chdir(path)
+file = "paper0.pdf"
+
+client = pymongo.MongoClient('mongodb://localhost:27017/')
+db = client['OPVDB']
+
+articles = db.articles
+article_data = {
+    'title': "file",
+    'content': "document",
+    'author': 'Sam'
+}
+
+# result = articles.insert_one(article_data)
+# print('One post: {0}'.format(result.inserted_id))
+
+# bills_post = posts.find_one({'author': 'Scott'})
+# print(bills_post)
