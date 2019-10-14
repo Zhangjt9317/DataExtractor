@@ -11,7 +11,12 @@ import glob, os
 class search_and_pull:
 
     def __init__(self):
+        # these three major platforms currently support full-text mining
         self.els_key = "4bc84cbdadca6050062348015ac963aa"
+        self.spn_key = "eca22bc7a0b1ee3153ab02c024a6a06e"
+        self.rsc_key = "rCv9bcgMfuUyvCXAG1vtZFUL0sTyuxjL"
+        self.rsc_secret = "aoCLYeFC4IInwBnX"
+        
         self.file = "testing_download_articles/write_test_els_paper2.json"
         self.folder = "testing_download_articles/"
         

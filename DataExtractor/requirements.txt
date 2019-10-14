@@ -54,6 +54,7 @@ protobuf==3.10.0
 pycodestyle==2.5.0
 pycryptodome==3.9.0
 Pygments==2.4.2
+pymongo==3.4.0
 PyMuPDF==1.16.3
 pyPdf==1.13
 PyPDF2==1.26.0
