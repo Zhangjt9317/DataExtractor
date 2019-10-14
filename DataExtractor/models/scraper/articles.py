@@ -39,12 +39,14 @@ def scrape(platform, scope, search_term, start, count):
         "summary": [],
         "source": platform
     }
-
+    
     # Elsevier
     # Scopus, ScienceDirect, etc.
     if platform == "Elsvier":
         apiKey = "4bc84cbdadca6050062348015ac963aa"
-        url = "https://api.elsevier.com/content/search/scopus?query={scope}:{search_term}&count={count}&start={start}&apiKey={apiKey}&sortBy=submittedDate&sortOrder=ascending&start={start}&max_results={count}"
+        # scopus hosts abstracts and citation statistics
+        # sicencedirect hosts full articles, so we use sciencedirect here 
+        url = "https://api.elsevier.com/content/search/sciencedirect?query={scope}:{search_term}&count={count}&start={start}&apiKey={apiKey}&sortBy=submittedDate&sortOrder=ascending&start={start}&max_results={count}"
 
     # Springer Nature
     elif platform == "Springer":

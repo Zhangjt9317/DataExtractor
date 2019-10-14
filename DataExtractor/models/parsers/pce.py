@@ -59,9 +59,10 @@ class PceParser(BaseParser):
 
 
 def parse_pce(list_of_sentences):
-    """ Takes a list of sentences and parses for quantified PCE
-        information and relationships to chemicals/chemical labels
-        """
+    """ 
+    Takes a list of sentences and parses for quantified PCE
+    information and relationships to chemicals/chemical labels
+    """
 
     Sentence.parsers.append(PceParser())
 
