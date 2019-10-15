@@ -21,27 +21,24 @@ from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, O
 from chemdataextractor.parse.cem import chemical_name
 from chemdataextractor.doc import Paragraph, Sentence
 
-
 class Ff(BaseModel):
     value = StringType()
     units = StringType()
-
 
 Compound.ff_pattern = ListType(ModelType(Ff))
 
 abbrv_prefix = (I(u'FF') | I(u'FFs') | I(u'ff')).hide()
 words_pref = (I(u'fill') + I(u'factor')).hide()
-hyphanated_pref = (I(u'power-conversion') + I(u'efficiency')).hide()
-prefix = abbrv_prefix | words_pref | hyphanated_pref
+prefix = abbrv_prefix | words_pref
 
+# fill factor has a unit of % or no unit
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
-units = (W(u'%') | I(u'percent'))(u'units')
+units = (W(u'%') | I(u'percent') | I(u''))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
 ff_first = (prefix + ZeroOrMore(common_text) + value + units)(u'ff')
 ff_second = (value + units + prefix)(u'ff')
 ff_pattern = ff_first | ff_second
-
 
 class FfParser(BaseParser):
     root = ff_pattern
@@ -59,9 +56,10 @@ class FfParser(BaseParser):
 
 
 def parse_ff(list_of_sentences):
-    """ Takes a list of sentences and parses for quantified PCE
-        information and relationships to chemicals/chemical labels
-        """
+    """ 
+    Takes a list of sentences and parses for quantified PCE
+    information and relationships to chemicals/chemical labels
+    """
 
     Sentence.parsers.append(FfParser())
 

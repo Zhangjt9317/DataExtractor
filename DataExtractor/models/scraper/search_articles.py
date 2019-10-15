@@ -1,3 +1,8 @@
+"""
+DataExtractor.scraper.search_articles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+
 import json
 import urllib
 import requests
@@ -5,7 +10,8 @@ import requests
 import pymongo
 from pymongo import MongoClient
 import sys
-import glob, os
+import glob
+import os
 
 # This class aims at scraping down articles for tests and store in local drive
 class search_and_pull:
@@ -16,11 +22,22 @@ class search_and_pull:
         self.spn_key = "eca22bc7a0b1ee3153ab02c024a6a06e"
         self.rsc_key = "rCv9bcgMfuUyvCXAG1vtZFUL0sTyuxjL"
         self.rsc_secret = "aoCLYeFC4IInwBnX"
-        
+
         self.file = "testing_download_articles/write_test_els_paper2.json"
         self.folder = "testing_download_articles/"
-        
-    def search_articles(self,file):
+
+        # key words that can be taken as query
+        # this will make the search results more focused
+        self.key_words = [
+            'organic photovoltaics',
+            'organic solar cell',
+            'thin film solar cell',
+            'π‑Conjugated polymer',
+            'fullerene-based'
+        ]
+
+    # define search articles using API
+    def search_articles(self, file):
         """
         This is the combination of search and full text retrieval API
         input : JSON file location
@@ -39,14 +56,15 @@ class search_and_pull:
                 names.append(i['dc:title'])
         return dois
 
-    def pull_articles(self,ls):
+    # define full article retrieval using API
+    def pull_articles(self, ls):
         """
         This function writes txt files for scraped documents
         """
         # pull articles
         doi = self.search_articles(file)
         els_key = self.els_key
-        
+
         for i in doi:
             els_url = 'https://api.elsevier.com/content/article/doi/' + doi + '?APIKey=' + els_key
             r = requests.get(els_url)
@@ -55,10 +73,9 @@ class search_and_pull:
                     file.write(r.content)
 
 
-# 
+# connecting to the mongodb and save the scraped results
 path = '../test_articles/'
 os.chdir(path)
-file = "paper0.pdf"
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 db = client['OPVDB']
@@ -70,8 +87,3 @@ article_data = {
     'author': 'Sam'
 }
 
-# result = articles.insert_one(article_data)
-# print('One post: {0}'.format(result.inserted_id))
-
-# bills_post = posts.find_one({'author': 'Scott'})
-# print(bills_post)
