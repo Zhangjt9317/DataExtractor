@@ -119,6 +119,11 @@ SOLVENTS = {
     'valeronitrile', 'water', 'xylene', 'xylol'
 }
 
+# typical additives for thin film organic photovoltaic device fabrication
+ADDITIVES = {
+    '','','','',''
+}
+
 # Common chemical name prefixes
 PREFIXES = {'iso', 'tert', 'sec', 'ortho', 'meta', 'para', 'meso'}
 

@@ -16,12 +16,9 @@ import logging
 import re
 
 import six
+
 # from . import EMAIL_RE, APOSTROPHES
-
-
 log = logging.getLogger(__name__)
-
-
 class BaseProcessor(six.with_metaclass(ABCMeta)):
     """Abstract processor class from which all processors inherit. Subclasses must implement a ``__call__()`` method."""
 
