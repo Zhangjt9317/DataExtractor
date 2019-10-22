@@ -29,7 +29,7 @@ Compound.voc_pattern = ListType(ModelType(Voc))
 
 abbrv_prefix = (I(u'VOC') | I(u'voc') | I(u'Voc') ).hide()
 words_pref = (I(u'open') + I(u'circuit') + I(u'voltage')).hide()
-hyphanated_pref =(I(u'open-circuit') + I(u'voltage')).hide()
+hyphanated_pref = (I(u'open') + I(u'-') + I('circuit') + I(u'voltage')).hide()
 prefix = abbrv_prefix | words_pref | hyphanated_pref
 
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()

@@ -32,7 +32,7 @@ Compound.pce_pattern = ListType(ModelType(Pce))
 
 abbrv_prefix = (I(u'PCE') | I(u'PCEs') | I(u'pce')).hide()
 words_pref = (I(u'power') + I(u'conversion') + I(u'efficiency')).hide()
-hyphanated_pref = (I(u'power-conversion') + I(u'efficiency')).hide()
+hyphanated_pref = (I(u'power') + I(u'-') + I('conversion') + I(u'efficiency')).hide()
 prefix = abbrv_prefix | words_pref | hyphanated_pref
 
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
