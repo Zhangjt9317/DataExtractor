@@ -29,24 +29,24 @@ imaging_tag = trainer.create_tag(project.id, "imaging")
 # To add the sample images to the project, insert the following code after the tag creation. 
 # This code uploads each image with its corresponding tag. 
 # You can upload up to 64 images in a single batch.
-base_image_url = "test_images/"
+base_image_url = "images/train_img/"
 
 print("Adding images...")
 
 image_list = []
 
-for image_num in range(1, 11):
-    file_name = "mol_{}.jpg".format(image_num)
+for image_num in range(1, 12):
+    file_name = "mol/mol_{}.jpg".format(image_num)
     with open(base_image_url + "mol/" + file_name, "rb") as image_contents:
         image_list.append(ImageFileCreateEntry(name=file_name, contents=image_contents.read(), tag_ids=[mol_tag.id]))
 
-for image_num in range(1, 11):
-    file_name = "curve_{}.jpg".format(image_num)
+for image_num in range(1, 20):
+    file_name = "curve/{}.jpg".format(image_num)
     with open(base_image_url + "curve/" + file_name, "rb") as image_contents:
         image_list.append(ImageFileCreateEntry(name=file_name, contents=image_contents.read(), tag_ids=[curve_tag.id]))
 
-for image_num in range(1, 11):
-    file_name = "imaging_{}.jpg".format(image_num)
+for image_num in range(1, 15):
+    file_name = "imaging/{}.jpg".format(image_num)
     with open(base_image_url + "imaging/" + file_name, "rb") as image_contents:
         image_list.append(ImageFileCreateEntry(name=file_name, contents=image_contents.read(), tag_ids=[imaging_tag.id]))
 
@@ -79,7 +79,7 @@ from azure.cognitiveservices.vision.customvision.prediction import CustomVisionP
 # Now there is a trained endpoint that can be used to make a prediction
 predictor = CustomVisionPredictionClient(prediction_key, endpoint=ENDPOINT)
 
-with open(base_image_url + "images/Test/test_image.jpg", "rb") as image_contents:
+with open(base_image_url + "images/test_img/mol_1.png", "rb") as image_contents:
     results = predictor.classify_image(
         project.id, publish_iteration_name, image_contents.read())
 
