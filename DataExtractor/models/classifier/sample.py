@@ -29,14 +29,14 @@ imaging_tag = trainer.create_tag(project.id, "imaging")
 # To add the sample images to the project, insert the following code after the tag creation. 
 # This code uploads each image with its corresponding tag. 
 # You can upload up to 64 images in a single batch.
-base_image_url = "images/train_img/"
+base_image_url = "train_img/"
 
 print("Adding images...")
 
 image_list = []
 
 for image_num in range(1, 12):
-    file_name = "mol/mol_{}.jpg".format(image_num)
+    file_name = "mol/{}.jpg".format(image_num)
     with open(base_image_url + "mol/" + file_name, "rb") as image_contents:
         image_list.append(ImageFileCreateEntry(name=file_name, contents=image_contents.read(), tag_ids=[mol_tag.id]))
 
