@@ -13,7 +13,7 @@ import logging
 import re
 
 from chemdataextractor.model import Compound, UvvisSpectrum, UvvisPeak, BaseModel, StringType, ListType, ModelType
-from chemdataextractor.parse.common import hyphen
+from chemdataextractor.parse.common import hyphen,lbrct, dt, rbrct
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.utils import first
 from chemdataextractor.parse.actions import strip_stop
@@ -27,16 +27,17 @@ class Ff(BaseModel):
 
 Compound.ff_pattern = ListType(ModelType(Ff))
 
-abbrv_prefix = (I(u'FF') | I(u'FFs') | I(u'ff')).hide()
+abbrv_prefix = (I(u'FF') | I(u'ff')).hide()
 words_pref = (I(u'fill') + I(u'factor')).hide()
 prefix = abbrv_prefix | words_pref
+# pref = (Optional(lbrct) + W('ff') + Optional(rbrct)).hide()
 
 # fill factor has a unit of % or no unit
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
 units = (W(u'%') | I(u'percent') | I(u''))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
-ff_first = (prefix + ZeroOrMore(common_text) + value + units)(u'ff')
+ff_first = (words_pref + (Optional(lbrct) + abbrv_prefix + Optional(rbrct)) + ZeroOrMore(common_text) + value + units)(u'ff')
 ff_second = (value + units + prefix)(u'ff')
 ff_pattern = ff_first | ff_second
 

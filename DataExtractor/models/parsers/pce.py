@@ -15,7 +15,7 @@ import logging
 import re
 
 from chemdataextractor.model import Compound, UvvisSpectrum, UvvisPeak, BaseModel, StringType, ListType, ModelType
-from chemdataextractor.parse.common import hyphen
+from chemdataextractor.parse.common import hyphen,lbrct, dt, rbrct
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.utils import first
 from chemdataextractor.parse.actions import strip_stop
@@ -39,7 +39,7 @@ common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
 units = (W(u'%') | I(u'percent'))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
-pce_first = (prefix + ZeroOrMore(common_text) + value + units)(u'pce')
+pce_first = (words_pref + (Optional(lbrct) + abbrv_prefix + Optional(rbrct)) + ZeroOrMore(common_text) + value + units)(u'pce')
 pce_second = (value + units + prefix)(u'pce')
 pce_pattern = pce_first | pce_second
 
