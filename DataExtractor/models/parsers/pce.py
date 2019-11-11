@@ -14,14 +14,18 @@ PCE is one key parameter to measure the performance of solar cells.
 import logging
 import re
 
+import chemdataextractor as cde
+from chemdataextractor import Document
 from chemdataextractor.model import Compound, UvvisSpectrum, UvvisPeak, BaseModel, StringType, ListType, ModelType
-from chemdataextractor.parse.common import hyphen
+from chemdataextractor.parse.common import hyphen,lbrct, dt, rbrct
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.utils import first
-from chemdataextractor.parse.actions import strip_stop
-from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, OneOrMore
-from chemdataextractor.parse.cem import chemical_name
-from chemdataextractor.doc import Paragraph, Sentence
+
+from chemdataextractor.parse.actions import strip_stop, merge, join
+from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, OneOrMore, Or, And, Not, Any
+from chemdataextractor.parse.cem import chemical_name,cem, chemical_label, lenient_chemical_label, solvent_name
+from chemdataextractor.doc import Paragraph, Sentence, Caption, Figure,Table, Heading
+from chemdataextractor.doc.table import Table, Cell
 
 
 class Pce(BaseModel):
@@ -30,17 +34,27 @@ class Pce(BaseModel):
 
 Compound.pce_pattern = ListType(ModelType(Pce))
 
-abbrv_prefix = (I(u'PCE') | I(u'PCEs') | I(u'pce')).hide()
-words_pref = (I(u'power') + I(u'conversion') + I(u'efficiency')).hide()
-hyphanated_pref = (I(u'power') + I(u'-') + I('conversion') + I(u'efficiency')).hide()
-prefix = abbrv_prefix | words_pref | hyphanated_pref
+# prefix = abbrv_prefix | words_pref | hyphanated_pref
 
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
 units = (W(u'%') | I(u'percent'))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
-pce_first = (prefix + ZeroOrMore(common_text) + value + units)(u'pce')
-pce_second = (value + units + prefix)(u'pce')
+abbrv_prefix = (I(u'PCE') | I(u'PCEs') | I(u'pce')).hide()
+words_pref = (I(u'power') + I(u'conversion') + I(u'efficiency')).hide()
+hyphanated_pref = (I(u'power') + I(u'-') + I('conversion') + I(u'efficiency')).hide()
+joined_range = R('^[\+\-–−]?\d+(\.\d+)?[\-–−~∼˜]\d+(\.\d+)?$')('value').add_action(merge)
+spaced_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (R('^[\-–−~∼˜]$') +
+                                                                        R('^[\+\-–−]?\d+(\.\d+)?$') | R('^[\+\-–−]\d+(\.\d+)?$')))('value').add_action(merge)
+to_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (I('to') +
+                                                                    R('^[\+\-–−]?\d+(\.\d+)?$') | R('^[\+\-–−]\d+(\.\d+)?$')))('value').add_action(join)
+
+prefix = Optional(I('a')).hide() + (Optional(lbrct) + W('PCE') + Optional(rbrct) | I('power') + Optional(I('conversion')) + Optional((I('efficiency') | I('range'))) + Optional((I('temperature') | I('range')))
+                                    ).hide() + Optional(lbrct + W('PCE') + rbrct) + Optional(W('=') | I('of') | I('was') | I('is') | I('at')).hide() + Optional(I('in') + I('the') + I('range') + Optional(I('of')) | I('about') | ('around') | I('%')).hide()
+
+pce_first  = (words_pref + (Optional(lbrct) + abbrv_prefix + Optional(rbrct)) + ZeroOrMore(common_text) + value + units)(u'pce')
+# pce_first = (prefix + ZeroOrMore(common_text) + value + units)(u'pce')
+pce_second = (prefix + value + units)(u'pce')
 pce_pattern = pce_first | pce_second
 
 class PceParser(BaseParser):

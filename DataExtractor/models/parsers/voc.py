@@ -12,34 +12,34 @@ Parses the open circuit voltage
 import logging
 import re
 
+import chemdataextractor as cde
+from chemdataextractor import Document
 from chemdataextractor.model import Compound, UvvisSpectrum, UvvisPeak, BaseModel, StringType, ListType, ModelType
-from chemdataextractor.parse.common import hyphen, lbrct, dt, rbrct
+from chemdataextractor.parse.common import hyphen,lbrct, dt, rbrct
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.utils import first
+
 from chemdataextractor.parse.actions import strip_stop, merge, join
-from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, OneOrMore, Not, Any
-from chemdataextractor.parse.cem import chemical_name
-from chemdataextractor.doc import Paragraph, Sentence
+from chemdataextractor.parse.elements import W, I, T, R, Optional, ZeroOrMore, OneOrMore, Or, And, Not, Any
+from chemdataextractor.parse.cem import chemical_name,cem, chemical_label, lenient_chemical_label, solvent_name
+from chemdataextractor.doc import Paragraph, Sentence, Caption, Figure,Table, Heading
+from chemdataextractor.doc.table import Table, Cell
 
 
 class Voc(BaseModel):
     value = StringType()
     units = StringType()
 
-# All hyphen and minus characters. Probably more robust than the hyph POS tag.
-hyphen = R('^[\-‐‑⁃‒–—―−－⁻]$')
-
-# All quote and apostrophe characters
-quote = R('^[\'’՚Ꞌꞌ＇‘’‚‛"“”„‟`´’‘]$')
-
-slash = W('/')
 
 Compound.voc_pattern = ListType(ModelType(Voc))
 
-abbrv_prefix = (I(u'VOC') | I(u'voc') | I(u'Voc')).hide()
-words_pref = (I(u'open') + I(u'circuit') + I(u'voltage')).hide()
-hyphanated_pref = (I(u'open') + hyphen + I('circuit') + I(u'voltage')).hide()
+common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
+units = (W(u'V') | I(u'v') | I(u'volt') | I(u'volts'))(u'units')
+value = R(u'\d+(\.\d+)?')(u'value')
 
+abbrv_prefix = (I(u'Voc') | I(u'voc')).hide()
+words_pref = (I(u'open') + I(u'circuit') + I(u'voltage')).hide()
+hyphanated_pref = (I(u'open') + I(u'-') + I('circuit') + I(u'voltage')).hide()
 joined_range = R(
     '^[\+\-–−]?\d+(\.\d+)?[\-–−~∼˜]\d+(\.\d+)?$')('value').add_action(merge)
 spaced_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (R('^[\-–−~∼˜]$') +
@@ -47,15 +47,12 @@ spaced_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (R('^
 to_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (I('to') +
                                                                     R('^[\+\-–−]?\d+(\.\d+)?$') | R('^[\+\-–−]\d+(\.\d+)?$')))('value').add_action(join)
 
-prefix = abbrv_prefix | words_pref | hyphanated_pref
-common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
-units = (W(u'V') | I(u'volt'))(u'units')
-value = R(u'\d+(\.\d+)?')(u'value')
+prefix = Optional(I('a')).hide() + (Optional(lbrct) + W('Voc') + Optional(rbrct) | I('open') + Optional(I('circuit')) + Optional((I('voltage')))
+                                    ).hide() + Optional(lbrct + W('Voc') + rbrct) + Optional(W('=') | I('of') | I('was') | I('is') | I('at')).hide() + Optional(I('in') + I('the') + I('range') + Optional(I('of')) | I('about') | ('around') | I('V')).hide()
 
 voc_first = (words_pref + (Optional(lbrct) + abbrv_prefix +
                            Optional(rbrct)) + ZeroOrMore(common_text) + value + units)(u'voc')
-voc_second = (value + units + prefix)(u'voc')
-
+voc_second = (prefix + value + units)(u'voc')
 voc_pattern = voc_first | voc_second
 
 
