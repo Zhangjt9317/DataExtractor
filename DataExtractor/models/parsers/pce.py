@@ -34,8 +34,6 @@ class Pce(BaseModel):
 
 Compound.pce_pattern = ListType(ModelType(Pce))
 
-# prefix = abbrv_prefix | words_pref | hyphanated_pref
-
 common_text = R('(\w+)?\D(\D+)+(\w+)?').hide()
 units = (W(u'%') | I(u'percent'))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
@@ -49,7 +47,7 @@ spaced_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (R('^
 to_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (I('to') +
                                                                     R('^[\+\-–−]?\d+(\.\d+)?$') | R('^[\+\-–−]\d+(\.\d+)?$')))('value').add_action(join)
 
-prefix = Optional(I('a')).hide() + (Optional(lbrct) + W('PCE') + Optional(rbrct) | I('power') + Optional(I('conversion')) + Optional((I('efficiency') | I('range'))) + Optional((I('temperature') | I('range')))
+prefix = Optional(I('a')).hide() + (Optional(lbrct) + W('PCEs') + Optional(rbrct) | I('power') + Optional(I('conversion')) + Optional((I('efficiency') | I('range'))) + Optional((I('temperature') | I('range')))
                                     ).hide() + Optional(lbrct + W('PCE') + rbrct) + Optional(W('=') | I('of') | I('was') | I('is') | I('at')).hide() + Optional(I('in') + I('the') + I('range') + Optional(I('of')) | I('about') | ('around') | I('%')).hide()
 
 pce_first  = (words_pref + (Optional(lbrct) + abbrv_prefix + Optional(rbrct)) + ZeroOrMore(common_text) + value + units)(u'pce')

@@ -36,8 +36,8 @@ units = (W(u'%') | I(u'percent'))(u'units')
 value = R(u'\d+(\.\d+)?')(u'value')
 
 abbrv_prefix = (I(u'FF') | I(u'ff')).hide()
-words_pref = (I(u'external') + I(u'quantum') + I(u'efficiency')).hide()
-hyphanated_pref = (I(u'external') + I(u'-') + I('quantum') + I(u'efficiency')).hide()
+words_pref = (I(u'fill') + I(u'factor')).hide()
+hyphanated_pref = (I(u'fill') + I(u'-') + I('factor')).hide()
 joined_range = R('^[\+\-–−]?\d+(\.\d+)?[\-–−~∼˜]\d+(\.\d+)?$')('value').add_action(merge)
 spaced_range = (R('^[\+\-–−]?\d+(\.\d+)?$') + Optional(units).hide() + (R('^[\-–−~∼˜]$') +
                                                                         R('^[\+\-–−]?\d+(\.\d+)?$') | R('^[\+\-–−]\d+(\.\d+)?$')))('value').add_action(merge)
