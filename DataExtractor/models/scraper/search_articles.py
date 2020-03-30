@@ -54,7 +54,7 @@ class search_and_pull:
             if 'prism:doi' in i:
                 dois.append(i['prism:doi'])
                 names.append(i['dc:title'])
-        return dois
+        return s
 
     # define full article retrieval using API
     def pull_articles(self, ls):
